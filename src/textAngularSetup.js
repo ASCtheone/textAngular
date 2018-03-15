@@ -861,33 +861,15 @@ angular.module('textAngularSetup', [])
     };
 
     taRegisterTool('insertImage', {
+        picker: true,
         iconclass: 'fa fa-picture-o',
         tooltiptext: taTranslations.insertImage.tooltip,
         action: function(){
             var imageLink;
-            imageLink = $window.prompt(taTranslations.insertImage.dialogPrompt, 'http://');
-            if(imageLink && imageLink !== '' && imageLink !== 'http://'){
-                /* istanbul ignore next: don't know how to test this... since it needs a dialogPrompt */
-                // block javascript here
-                if (!blockJavascript(imageLink)) {
-                    if (taSelection.getSelectionElement().tagName && taSelection.getSelectionElement().tagName.toLowerCase() === 'a') {
-                        // due to differences in implementation between FireFox and Chrome, we must move the
-                        // insertion point past the <a> element, otherwise FireFox inserts inside the <a>
-                        // With this change, both FireFox and Chrome behave the same way!
-                        taSelection.setSelectionAfterElement(taSelection.getSelectionElement());
-                    }
-                    // In the past we used the simple statement:
-                    //return this.$editor().wrapSelection('insertImage', imageLink, true);
-                    //
-                    // However on Firefox only, when the content is empty this is a problem
-                    // See Issue #1201
-                    // Investigation reveals that Firefox only inserts a <p> only!!!!
-                    // So now we use insertHTML here and all is fine.
-                    // NOTE: this is what 'insertImage' is supposed to do anyway!
-                    var embed = '<img src="' + imageLink + '">';
-                    return this.$editor().wrapSelection('insertHTML', embed, true);
-                }
-            }
+
+            var embed = '<div>file name : {{myFile.name}}<br><input type="file" file-model="myFile"/><button ng-click="uploadFile()">upload me</button></div>';
+            //var embed = '<img src="' + imageLink + '">';
+            return this.$editor().wrapSelection('insertHTML', embed, true);
         },
         onElementSelect: {
             element: 'img',
